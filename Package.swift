@@ -17,11 +17,29 @@
 
 import PackageDescription
 
-let package = Package(name: "LogKit",
-                      platforms: [.macOS(.v10_12),
-                                  .iOS(.v10),
-                                  .tvOS(.v10),
-                                  .watchOS(.v3)],
-                      products: [.library(name: "LogKit", targets: ["LogKit"])],
-                      targets: [.target(name: "LogKit", path: "Source")],
-                      swiftLanguageVersions: [.v5])
+let package = Package(
+    name: "LogKit",
+    platforms: [
+        .macOS(.v10_12), .iOS(.v13), .tvOS(.v13)
+    ],
+    products: [
+        // Products define the executables and libraries a package produces, and make them visible to other packages.
+        .library(
+            name: "LogKit",
+            targets: ["LogKit OSX","LogKit iOS","LogKit tvOS","LogKit watchOS"])
+    ],
+    dependencies: [
+        // Dependencies declare other packages that this package depends on.
+    ],
+    targets: [
+        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
+        // Targets can depend on other targets in this package, and on products in packages this package depends on.
+        .target(
+            name: "LogKit",
+            dependencies: []),
+        ),
+        .testTarget(
+            name: "LogKitTests",
+            dependencies: ["LogKit"]),
+    ]
+)
