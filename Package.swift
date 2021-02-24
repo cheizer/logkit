@@ -25,8 +25,6 @@ let package = Package(
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
-        .library(
-            name: "LogKit",
-            targets: ["LogKit OSX","LogKit iOS","LogKit tvOS","LogKit watchOS"])
+        .library( name: "LogKit" )
     ]
 )
