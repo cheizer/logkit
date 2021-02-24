@@ -16,8 +16,6 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 import Foundation
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
   case let (l?, r?):
@@ -29,8 +27,6 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   }
 }
 
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
 fileprivate func <= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
   case let (l?, r?):
@@ -91,7 +87,7 @@ private class LXLogFile {
 
     fileprivate let lockQueue: DispatchQueue = DispatchQueue(label: "logFile-Lock", attributes: [])
     fileprivate let handle: FileHandle
-	fileprivate var privateByteCounter: UInt64?
+    fileprivate var privateByteCounter: UInt64?
     fileprivate var privateModificationTracker: TimeInterval?
 
     /// Clean up.
@@ -107,7 +103,7 @@ private class LXLogFile {
         self.handle = handle
 
         if appending {
-			self.privateByteCounter = UInt64(self.handle.seekToEndOfFile())
+            self.privateByteCounter = UInt64(self.handle.seekToEndOfFile())
         } else {
             self.handle.truncateFile(atOffset: 0)
             self.privateByteCounter = 0
@@ -135,8 +131,8 @@ private class LXLogFile {
     }
 
     /// The size of this log file in bytes.
-	var sizeInBytes: UInt64? {
-		var size: UInt64?
+    var sizeInBytes: UInt64? {
+        var size: UInt64?
         self.lockQueue.sync(execute: { size = self.privateByteCounter })
         return size
     }
@@ -152,7 +148,7 @@ private class LXLogFile {
     func writeData(_ data: Data) {
         self.lockQueue.async(execute: {
             self.handle.write(data)
-			self.privateByteCounter = (self.privateByteCounter ?? 0) + UInt64(data.count)
+            self.privateByteCounter = (self.privateByteCounter ?? 0) + UInt64(data.count)
             self.privateModificationTracker = CFAbsoluteTimeGetCurrent()
         })
     }
@@ -197,14 +193,14 @@ open class RotatingFileEndpoint: LXEndpoint {
     /// The formatter used by this Endpoint to serialize each Log Entry to a string.
     open var entryFormatter: LXEntryFormatter
     /// This Endpoint requires a newline character appended to each serialized Log Entry string.
-    open let requiresNewlines: Bool = true
+    public let requiresNewlines: Bool = true
 
     /// The URL of the directory in which the set of log files is located.
-    open let directoryURL: URL
+    public let directoryURL: URL
     /// The base file name of the log files.
     fileprivate let baseFileName: String
     /// The maximum allowed file size in bytes. `nil` indicates no limit.
-	fileprivate let maxFileSizeBytes: UInt64?
+    fileprivate let maxFileSizeBytes: UInt64?
     /// The number of files to include in the rotating set.
     fileprivate let numberOfFiles: UInt
     /// The index of the current file from the rotating set.
@@ -259,7 +255,7 @@ open class RotatingFileEndpoint: LXEndpoint {
     ) {
         self.dateFormatter = dateFormatter
         self.entryFormatter = entryFormatter
-		self.maxFileSizeBytes = maxFileSizeKiB == nil ? nil : UInt64(maxFileSizeKiB!) * 1024
+        self.maxFileSizeBytes = maxFileSizeKiB == nil ? nil : UInt64(maxFileSizeKiB!) * 1024
         self.numberOfFiles = numberOfFiles
         //TODO: check file or directory to predict if file is accessible
         guard let dirURL = baseURL?.deletingLastPathComponent(), let filename = baseURL?.lastPathComponent else {
@@ -362,7 +358,7 @@ open class RotatingFileEndpoint: LXEndpoint {
     /// - returns: A boolean indicating whether a new log file should be selected.
     fileprivate func shouldRotateBeforeWritingDataWithLength(_ length: Int) -> Bool {
         switch (self.maxFileSizeBytes, self.currentFile?.sizeInBytes) {
-		case (.some(let maxSize), .some(let size)) where size + UInt64(length) > maxSize: // Won't fit
+        case (.some(let maxSize), .some(let size)) where size + UInt64(length) > maxSize: // Won't fit
             fallthrough
         case (.some, .none):                                                               // Can't determine current size
             return true
@@ -489,8 +485,7 @@ open class DatedFileEndpoint: RotatingFileEndpoint {
     /// Returns `true` if the current date no longer matches the log file's date. Disregards the `length` parameter.
     fileprivate override func shouldRotateBeforeWritingDataWithLength(_ length: Int) -> Bool {
         switch self.currentFile?.modificationDate {
-        //case .some(let modificationDate) where !UTCCalendar.isDateSameAsToday(modificationDate):    // Wrong date
-		case .some(let modificationDate) where !UTCCalendar.isDateInToday(modificationDate):    // Wrong date
+        case .some(let modificationDate) where !UTCCalendar.isDateSameAsToday(modificationDate):    // Wrong date
             fallthrough
         case .none:                                                                                 // Can't determine the date
             return true

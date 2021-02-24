@@ -101,7 +101,7 @@ class FileEndpointTests: XCTestCase {
         let bytes = writeCount.flatMap({ _ in testString.utf8 })
         let canonical = Data(bytes: UnsafePointer<UInt8>(bytes), count: bytes.count)
         let _ = self.endpoint?.barrier() // Doesn't return until the writes are finished.
-        XCTAssert((try! Data(contentsOf: self.endpoint!.currentURL))! == canonical)
+        XCTAssert((try! Data(contentsOf: self.endpoint!.currentURL)) == canonical)
     }
 
 }
@@ -156,7 +156,7 @@ class RotatingFileEndpointTests: XCTestCase {
         let bytes = writeCount.flatMap({ _ in testString.utf8 })
         let canonical = Data(bytes: UnsafePointer<UInt8>(bytes), count: bytes.count)
         let _ = self.endpoint?.barrier() // Doesn't return until the writes are finished.
-        XCTAssert((try! Data(contentsOf: self.endpoint!.currentURL))! == canonical)
+        XCTAssert((try! Data(contentsOf: self.endpoint!.currentURL)) == canonical)
     }
 
 }
@@ -202,7 +202,7 @@ class DatedFileEndpointTests: XCTestCase {
         let bytes = writeCount.flatMap({ _ in testString.utf8 })
         let canonical = Data(bytes: UnsafePointer<UInt8>(bytes), count: bytes.count)
         let _ = self.endpoint?.barrier() // Doesn't return until the writes are finished.
-        XCTAssert((try! Data(contentsOf: self.endpoint!.currentURL))! == canonical)
+        XCTAssert((try! Data(contentsOf: self.endpoint!.currentURL)) == canonical)
     }
     
 }
@@ -251,7 +251,7 @@ class LoggerTests: XCTestCase {
             "[DEBUG] debug", "[INFO] info", "[NOTICE] notice", "[WARNING] warning", "[ERROR] error", "[CRITICAL] critical",
         ].joined(separator: "\n") + "\n"
         
-        self.fileEndpoint?.barrier() // Doesn't return until the writes are finished.
+        _ = self.fileEndpoint?.barrier() // Doesn't return until the writes are finished.
 
         let actualContent = try! String(contentsOf: self.fileEndpoint!.currentURL, encoding: String.Encoding.utf8)
 
