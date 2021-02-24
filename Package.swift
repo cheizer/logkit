@@ -1,3 +1,4 @@
+// swift-tools-version:5.3
 // Package.swift
 //
 // Copyright (c) 2015 - 2016, Justin Pawela & The LogKit Project
@@ -41,5 +42,6 @@ let package = Package(
         .testTarget(
             name: "LogKitTests",
             dependencies: ["LogKit"]),
-    ]
+    ],
+    swiftLanguageVersions: [.v5]
 )
