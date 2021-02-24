@@ -17,6 +17,7 @@
 
 import Foundation
 
+
 /// The details of a Log Entry.
 ///
 /// - parameter       logKitVersion: The version of the LogKit framework that generated this Entry.
